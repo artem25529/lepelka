@@ -3,7 +3,10 @@ package com.es.lepelka.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,23 +16,32 @@ import java.util.List;
 public class User {
     @Id
     @Column(name = "personnel_number")
+    @Pattern(regexp = "\\d{6}", message = "Табельный номер должен состоять из 6 цифр")
     private String personnelNumber;
 
     @Size(max = 50)
     @Column(name = "first_name")
+    @NotBlank(message = "Поле не должно быть пустым")
     private String firstName;
 
     @Size(max = 50)
     @Column(name = "last_name")
+    @NotBlank(message = "Поле не должно быть пустым")
     private String lastName;
 
 
     @Size(max = 100)
+    @NotBlank(message = "Поле не должно быть пустым")
     private String password;
 
     private boolean enabled;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.REFRESH
+    })
     @JoinTable(
             name = "user_authority",
             joinColumns = @JoinColumn(name = "user_id"),

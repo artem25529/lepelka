@@ -4,21 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <script th:src="@{/script.js}"></script>
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon_1.ico}">
 </head>
 <body>
-<h1>Please Log In</h1>
-<div th:if="${param.error}">
-    Invalid username and password.</div>
-<div th:if="${param.logout}">
-    You have been logged out.</div>
-<form th:action="@{/login}" method="post">
-    <div>
-        <input type="text" name="username" placeholder="Username"/>
+<div class="container center-block">
+    <div style="margin-right: auto; margin-left: auto">
+        <h1>Ввведите логин и пароль</h1>
+        <div th:if="${param.error}" class="error">
+            Неверное имя пользователя или пароль.
+        </div>
+        <div th:if="${param.logout}">
+            You have been logged out.</div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                <input type="text" name="username" placeholder="Табельный номер"/>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                <input type="password" name="password" placeholder="Пароль"/>
+            </div>
+            <input type="submit" value="Войти" class="btn"/>
+        </form>
     </div>
-    <div>
-        <input type="password" name="password" placeholder="Password"/>
-    </div>
-    <input type="submit" value="Log in" />
-</form>
+
+</div>
+
 </body>
 </html>

@@ -2,18 +2,55 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:th="http://www.thymeleaf.org"
                 xmlns:layout="http://www.thymeleaf.org"
-                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+                layout:decorate="master" th:with="title='Test'">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-    <div sec:authorize="isAuthenticated()">
-        <b>Authenticated</b>
-    </div>
+    <div layout:fragment="content">
+        <div class="container">
+            <form method="post" th:action="@{/test/process}">
+                <input type="hidden" name="testId" th:value="${test.id}">
+                <h2 th:text="${test.name}"></h2>
+                <ol>
+                    <li th:each="quest, i: ${test.questions}">
+                        <span th:text="${quest.question}"></span>
+                        <ol>
+                            <li th:each="variant, i2: ${quest.variants}">
+                                <input type="radio" th:name="${i.index}" th:value="${i2.count}" required>
+                                <span th:text="${variant}"></span>
+                                <br/>
+                            </li>
+                        </ol>
+                    </li>
+                </ol>
+                <button class="btn">Проверить</button>
+            </form>
 
-    <div sec:authorize="isAnonymous()">
-        <b>Authenticated</b>
+            <div th:if="${testResult != null}">
+                Ваш результат: <span th:text="${testResult.correctAnswersQty} + '/' + ${testResult.questionsQty}"></span>
+
+                <table th:if="${testResult.questionErrors.size() > 0}" class="table">
+                    <tr>
+                        <th>Номер вопроса</th>
+                        <th>Ваш ответ</th>
+                        <th>Правильынй ответ</th>
+                    </tr>
+                    <tr th:each="err: ${testResult.questionErrors}">
+                        <td th:text="${err.questionNumber}"></td>
+                        <td th:text="${err.actualAnswer}"></td>
+                        <td th:text="${err.rightAnswer}"></td>
+                    </tr>
+                </table>
+
+                <b th:if="${testResult.questionErrors.size() == 0}">
+                    Ошибок нет
+                </b>
+            </div>
+        </div>
+
     </div>
 
 </body>

@@ -28,13 +28,16 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeHttpRequests(authConfig -> {
-                    authConfig.requestMatchers("/", "/login").permitAll();
+                    authConfig.requestMatchers("/", "/login", "/script.js","/style.css", "/favicon_1.ico").permitAll();
                     authConfig.requestMatchers("/admin").hasAuthority("ADMIN");
+                    authConfig.requestMatchers("/reg").anonymous();
                     authConfig.anyRequest().authenticated();
                 })
                 .formLogin(login -> {
                     login.loginPage("/login");
+                    login.defaultSuccessUrl("/");
                 })
                 .logout(logout -> {
                     logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));

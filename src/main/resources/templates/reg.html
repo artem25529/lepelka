@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon_1.ico}">
+    <script th:src="@{/script.js}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>Ввведите данные для регистрации</h1>
+            <form method="post" th:action="@{/reg}" th:object="${user}">
+                <table class="table">
+                    <tr>
+                        <td>
+                            <label for="personnelNumber">Табельный номер </label>
+                        </td>
+                        <td>
+                            <input type="text" id="personnelNumber" th:field="*{personnelNumber}"/>
+                        </td>
+                        <td>
+                            <span th:if="${#fields.hasErrors('personnelNumber')}" th:errorclass="error" th:errors="*{personnelNumber}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="firstName">Имя </label>
+                        </td>
+                        <td>
+                            <input type="text" id="firstName" th:field="*{firstName}"/>
+                        </td>
+                        <td>
+                            <span th:if="${#fields.hasErrors('firstName')}" th:errorclass="error" th:errors="*{firstName}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="lastName">Фамилия </label>
+                        </td>
+                        <td>
+                            <input type="text" id="lastName" th:field="*{lastName}"/>
+                        </td>
+                        <td>
+                            <span th:if="${#fields.hasErrors('lastName')}" th:errorclass="error" th:errors="*{lastName}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="password">Пароль </label>
+                        </td>
+                        <td>
+                            <input type="password" id="password" th:field="*{password}"/>
+                        </td>
+                        <td>
+                            <span th:if="${#fields.hasErrors('password')}" th:errorclass="error" th:errors="*{password}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="submit" value="Зарегистрироваться" class="btn">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

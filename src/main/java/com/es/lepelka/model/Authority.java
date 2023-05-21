@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 @Table(name = "authorities")
 public class Authority {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(unique = true)

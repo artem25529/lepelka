@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+                layout:decorate="master" th:with="title='Test Results'">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div layout:fragment="content">
+
+        <div th:if="${results.size() > 0}" class="container">
+            <h1>Результаты прохождения тестов</h1>
+            <table class="table">
+                <tr>
+                   <th>Пользователь</th>
+                   <th>Дата</th>
+                   <th>Тест</th>
+                   <th>Результат</th>
+                </tr>
+                <tr th:each="res: ${results}">
+                    <td th:text="${res.user}"></td>
+                    <td th:text="${res.date}"></td>
+                    <td th:text="${res.testName}"></td>
+                    <td th:text="${res.result}"></td>
+                </tr>
+            </table>
+        </div>
+        <div th:if="${results.size() == 0}" class="container">
+            <h1>Не найдено результатов тестов</h1>
+        </div>
+    </div>
+
+</body>
+</html>

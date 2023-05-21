@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.thymeleaf.org"
+                xmlns:th="http://www.thymeleaf.org"
+                layout:decorate="master" th:with="title='User Info'"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container">
+            <h1>Информация о пользователе</h1>
+            <table class="table">
+                <tr>
+                    <th>Табельный номер</th>
+                    <th>Имя</th>
+                    <th>Фамилия</th>
+                    <th>Доступ</th>
+                    <th>Пароль</th>
+                </tr>
+                <tr id="info-row">
+                    <td th:text="${user.personnelNumber}"></td>
+                    <td th:text="${user.firstName}"></td>
+                    <td th:text="${user.lastName}"></td>
+                    <td th:text="${user.enabled}"></td>
+                    <td th:text="${user.password}"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <form method="post" th:action="@{/user/delete/{id}(id=${user.personnelNumber})}">
+                            <button class="btn btn-danger">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

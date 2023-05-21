@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.thymeleaf.org"
+                xmlns:th="http://www.thymeleaf.org"
+                layout:decorate="master" th:with="title='Topics'"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container">
+            <h1>Категории</h1>
+            <ul class="nav nav-tabs">
+                <li th:classappend="${activeTab eq 'theory' or activeTab eq null} ? 'active' : ''"><a th:href="@{/topic/{section}/theory(section=${section})}">Теоритические материалы</a></li>
+                <li th:classappend="${activeTab eq 'instruction'} ? 'active' : ''"><a th:href="@{/topic/{section}/instruction(section=${section})}">Инструкции</a></li>
+                <li th:classappend="${activeTab eq 'test'} ? 'active' : ''"><a th:href="@{/topic/{section}/test(section=${section})}">Тесты</a></li>
+            </ul>
+            <div th:if="${activeTab eq 'test'}" class="container-fluid">
+                <ul th:each="test: ${tests}">
+                    <li>
+                        <a th:text="${test.name}" th:href="@{/test/{id}(id=${test.id})}"></a>
+                        <span sec:authorize="hasAuthority('ADMIN')">
+                            <button type="button" class="deltest btn btn-danger" th:id="${test.id}">Удалить</button>
+                        </span>
+                    </li>
+                </ul>
+                <button sec:authorize="hasAuthority('ADMIN')" class="btn" id="addTest">Добавить Тест</button>
+            </div>
+            <div th:if="${activeTab ne 'test'}" class="container-fluid">
+                <ul th:each="topic: ${topics}">
+                    <li>
+                        <a th:text="${topic.name}" th:href="@{/topic/get/{id}(id=${topic.id})}"></a>
+                        <span sec:authorize="hasAuthority('ADMIN')">
+                            <button type="button" class="deltopic btn btn-danger" th:id="${topic.id}">Удалить</button>
+                        </span>
+                    </li>
+                </ul>
+                <button sec:authorize="hasAuthority('ADMIN')" class="btn" id="addTopic">Добавить</button>
+            </div>
+            <script>
+                $('#addTest').click(function () {
+                    $(this).hide()
+                    console.log('adding test')
+                    let section = '[[${section}]]'
+
+                    let testForm = $(`<form id="testForm"></form>`)
+                    $(this).before(testForm)
+
+                    testForm.append(`<input id="testSection" type="hidden" name="section" value="${section}">`)
+                        .append(`<b>Название теста:</b> <input id="testName" type="text" name="name" required><br/>`)
+                        .append(`<button type="button" id="addQuestion" class="btn">Добавить вопрос</button>`)
+
+                    $('#addQuestion').click(function () {
+                        console.log("quest")
+                        let questionDiv = $('<div class="questionDiv"></div>')
+                        questionDiv.append(`<b>Название вопроса:</b> <input type="text" name="name"><br/>`)
+                            .append(`<b>Вариант 1:</b> <input class="variant" type="text" required><br/>`)
+                            .append(`<b>Вариант 2:</b> <input class="variant" type="text" required><br/>`)
+                            .append(`<b>Вариант 3:</b> <input class="variant" type="text" required><br/>`)
+                            .append(`<b>Правильный вариант:</b> <input type="number" required min="1" max="3"><br/>`)
+
+                        $(this).before(questionDiv)
+
+                        let submitTestBtn = $('<br/><button type="button" id="submitTest" class="btn btn-success">Сохранить тест</button>')
+                        if ($('#submitTest').length === 0) {
+                            $(this).after(submitTestBtn)
+                        }
+
+                        $(submitTestBtn).click(function () {
+                            console.log('submit')
+
+                            const testObj = {}
+                            const questionsArr = []
+                            let section = $('#testForm input[name=section]').val()
+                            let name = $('#testForm #testName').val()
+
+                            testObj.section = section
+                            testObj.name = name
+                            testObj.questions = questionsArr
+
+                            $('#testForm .questionDiv').each(function () {
+                                let quest = {}
+                                let questVariants = []
+                                quest.variants = questVariants;
+
+                                quest.question = $(this).find($('input[name=name]')).val()
+                                quest.rightAnswer = $(this).find($('input[type=number]')).val()
+
+                                $(this).find($('input.variant')).each(function () {
+                                    questVariants.push($(this).val())
+                                })
+
+                                questionsArr.push(quest)
+                            })
+
+                            console.log(testObj)
+
+                            $.ajax({
+                                type: 'POST',
+                                url: '/test/save',
+                                contentType: 'application/json',
+                                data: JSON.stringify(testObj),
+
+                                success: function (res) {
+                                    console.log(res)
+                                    location.reload();
+                                }
+                            })
+                        })
+                    })
+                })
+
+                $('#addTopic').click(function () {
+                    let section = '[[${section}]]'
+                    let subsection = '[[${activeTab}]]'
+                    $(this).before(
+                        `<form method="post" action="/topic/add" enctype="multipart/form-data">
+                            <input type="hidden" name="section" value="${section}">
+                            <input type="hidden" name="subsection" value="${subsection}">
+                            Введите название: <input type="text" name="title" required>
+                            <input type="file" name="file" class="btn" required>
+                            <input type="submit" value="Сохранить" class="btn btn-success">
+                         </form>`
+                        )
+
+                    $('#addTopic').hide();
+                })
+            </script>
+        </div>
+    </div>
+</body>
+</html>
